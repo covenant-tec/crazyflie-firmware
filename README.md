@@ -1,18 +1,8 @@
 # Crazyflie Custom Firmware
 
-Bitcraze Crazyflie firmware configured for external tracking with OptiTrack.
-
-## Context
-
-This repository is the onboard firmware component of the [crazyflie-optitrack](https://github.com/covenant-tec/crazyflie-optitrack) workspace. The companion ROS 2 packages in that repository handle OptiTrack communication, state logging, and parameter injection.
-
-## Application Location
-
-The custom controller source code, parameters, and build configuration are located in:
-
-`examples/app_out_of_tree_controller/`
-
-All compilation and flashing commands must be executed from within that directory.
+Crazyflie 2.X firmware with a custom Out-of-Tree controller for flight with OptiTrack.
+This repository is used together with the [crazyflie-optitrack](https://github.com/covenant-tec/crazyflie-optitrack) workspace, which provides the ROS 2 packages to connect to the drone and stream OptiTrack data.
+The controller code and build files are located in `examples/app_out_of_tree_controller/`.
 
 ## Parameters
 
