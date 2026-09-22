@@ -1,6 +1,6 @@
-# Crazyflie Firmware (Custom Out-of-Tree Controller Fork)
+# Crazyflie Custom Firmware
 
-Custom fork of the Bitcraze Crazyflie firmware implementing an Out-of-Tree controller for closed-loop flight with OptiTrack motion capture feedback.
+Bitcraze Crazyflie firmware configured for external tracking with OptiTrack.
 
 ## Context
 
