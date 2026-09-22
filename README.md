@@ -1,38 +1,59 @@
-# Crazyflie Firmware  [![CI](https://github.com/bitcraze/crazyflie-firmware/workflows/CI/badge.svg)](https://github.com/bitcraze/crazyflie-firmware/actions?query=workflow%3ACI)
+# Crazyflie Firmware (Custom Out-of-Tree Controller Fork)
 
-This project contains the source code for the firmware used in the Crazyflie range of platforms, including the Crazyflie 2.x and the Roadrunner.
+Custom fork of the Bitcraze Crazyflie firmware implementing an Out-of-Tree controller for closed-loop flight with OptiTrack motion capture feedback.
 
-### Crazyflie 1.0 support
+## Context
 
-The 2017.06 release was the last release with Crazyflie 1.0 support. If you want
-to play with the Crazyflie 1.0 and modify the code, please clone this repo and
-branch off from the 2017.06 tag.
+This repository is the onboard firmware component of the [crazyflie-optitrack](https://github.com/covenant-tec/crazyflie-optitrack) workspace. The companion ROS 2 packages in that repository handle OptiTrack communication, state logging, and parameter injection.
 
-## Building and Flashing
-See the [building and flashing instructions](https://github.com/bitcraze/crazyflie-firmware/blob/master/docs/building-and-flashing/build.md) in the github docs folder.
+## Application Location
 
+The custom controller source code, parameters, and build configuration are located in:
 
-## Official Documentation
+`examples/app_out_of_tree_controller/`
 
-Check out the [Bitcraze crazyflie-firmware documentation](https://www.bitcraze.io/documentation/repository/crazyflie-firmware/master/) on our website.
+All compilation and flashing commands must be executed from within that directory.
 
-## Generated documentation
+## Parameters
 
-The easiest way to generate the API documentation is to use the [toolbelt](https://github.com/bitcraze/toolbelt)
+Controller gains and physical constants are registered under the `ootParams` parameter group:
 
-```tb build-docs```
+* `trans_kp_x`, `trans_kp_y`, `trans_kp_z`: Translational proportional gains.
+* `trans_kd_x`, `trans_kd_y`, `trans_kd_z`: Translational derivative gains.
+* `trans_ki_x`, `trans_ki_y`, `trans_ki_z`: Translational integral gains.
+* `trans_emax`, `trans_mu`, `trans_gamma`: Translational homogeneous nonlinear terms.
+* `rot_kp_x`, `rot_kp_y`, `rot_kp_z`: Rotational proportional gains.
+* `rot_kd_x`, `rot_kd_y`, `rot_kd_z`: Rotational derivative gains.
+* `rot_ki_x`, `rot_ki_y`, `rot_ki_z`: Rotational integral gains.
+* `rot_emax`, `rot_mu`, `rot_gamma`: Rotational homogeneous nonlinear terms.
+* `mass`: Physical vehicle mass in kilograms, defaulting to 0.029 kg when unconfigured.
 
-and to view it in a web page
+## Build & Flash
 
-```tb docs```
+Navigate to the application directory:
 
-## Contribute
-Go to the [contribute page](https://www.bitcraze.io/contribute/) on our website to learn more.
+```bash
+cd examples/app_out_of_tree_controller
+```
 
-### Test code for contribution
+Compile the application binary:
 
-To run the tests please have a look at the [unit test documentation](https://www.bitcraze.io/documentation/repository/crazyflie-firmware/master/development/unit_testing/).
+```bash
+make clean && make
+```
 
-## License
+Flash the compiled binary over radio by specifying the address of your drone in the `RADIO` parameter:
 
-The code is licensed under LGPL-3.0
+```bash
+make cload RADIO=<your-crazyflie-uri>
+```
+
+Example:
+
+```bash
+make cload RADIO=radio://0/80/2M/E7E7E7E7E7
+```
+
+## Credits
+
+The custom Out-of-Tree controller architecture, homogeneous nonlinear control formulation, and Crazyflie firmware integration were designed and implemented by [Kevin Martinez](https://github.com/Fairbrook) as part of doctoral research.
