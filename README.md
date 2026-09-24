@@ -17,6 +17,10 @@ Controller gains and physical constants are registered under the `ootParams` par
 * `rot_ki_x`, `rot_ki_y`, `rot_ki_z`: Rotational integral gains.
 * `rot_emax`, `rot_mu`, `rot_gamma`: Rotational homogeneous nonlinear terms.
 * `mass`: Physical vehicle mass in kilograms, defaulting to 0.029 kg when unconfigured.
+* `thrust_max`, `thrust_min`: Dynamic saturation limits for collective thrust (defaults to 1.5 and 0.0).
+* `torque_max`: Dynamic saturation limit for attitude control torque (defaults to 0.5).
+
+> **Note:** The internal default values in the firmware are tuned for a single marker configuration. If the ROS 2 bridge fails to push parameter overrides from the `.conf` files, the drone will safely fall back to these single-marker bounds.
 
 ## Build & Flash
 
