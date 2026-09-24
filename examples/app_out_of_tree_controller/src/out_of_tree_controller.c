@@ -96,6 +96,9 @@ static float ROT_MU = 0.0;
 static float ROT_EMAX = 1.0;
 static float ROT_GAMMA = 0.0;
 static float OOT_MASS = 0.0f;
+static float OOT_THRUST_MAX = 1.5f;
+static float OOT_THRUST_MIN = 0.0f;
+static float OOT_TORQUE_MAX = 0.5f;
 
 // Init store variables
 static float pos_error_stored[] = {0.0f, 0.0f, 0.0f};
@@ -326,7 +329,7 @@ void controllerOutOfTree(control_t *control, const setpoint_t *setpoint,
               curr_thrust_force_vectorq.z); // Force direction
     control_thrust = fu.z / vdot(z_vec, curr_thrust_force_vector); // Fu
     control_thrust =
-        constrain(control_thrust, current_mass * GRAVITY_MAGNITUDE * 0.15f, current_mass * GRAVITY_MAGNITUDE * 2.5f);
+        constrain(control_thrust, current_mass * GRAVITY_MAGNITUDE * OOT_THRUST_MIN, current_mass * GRAVITY_MAGNITUDE * OOT_THRUST_MAX);
   }
 
   if (RATE_DO_EXECUTE(ATTITUDE_RATE, stabilizerStep)) {
@@ -424,8 +427,8 @@ void controllerOutOfTree(control_t *control, const setpoint_t *setpoint,
     struct vec tau =
         vadd(veltmul(vscl(-2, rot_kp_vector), veltmul(rdhprop, rotError)),
              veltmul(vscl(-1, rot_kd_vector), veltmul(rdhdiff, omega)));
-    if (vmag(tau) > current_mass * 0.5f) {
-      tau = vscl(current_mass * 0.5f, vdiv(tau, vmag(tau)));
+    if (vmag(tau) > current_mass * OOT_TORQUE_MAX) {
+      tau = vscl(current_mass * OOT_TORQUE_MAX, vdiv(tau, vmag(tau)));
     }
     control_torque.x = tau.x;
     control_torque.y = tau.y;
@@ -488,6 +491,9 @@ PARAM_ADD(PARAM_FLOAT | PARAM_PERSISTENT, rot_emax, &ROT_EMAX)
 PARAM_ADD(PARAM_FLOAT | PARAM_PERSISTENT, rot_mu, &ROT_MU)
 PARAM_ADD(PARAM_FLOAT | PARAM_PERSISTENT, mass, &OOT_MASS)
 PARAM_ADD(PARAM_FLOAT | PARAM_PERSISTENT, rot_gamma, &ROT_GAMMA)
+PARAM_ADD(PARAM_FLOAT | PARAM_PERSISTENT, thrust_max, &OOT_THRUST_MAX)
+PARAM_ADD(PARAM_FLOAT | PARAM_PERSISTENT, thrust_min, &OOT_THRUST_MIN)
+PARAM_ADD(PARAM_FLOAT | PARAM_PERSISTENT, torque_max, &OOT_TORQUE_MAX)
 PARAM_GROUP_STOP(ootParams)
 
 LOG_GROUP_START(oot)
